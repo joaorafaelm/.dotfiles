@@ -2,7 +2,7 @@
 export ZSH=$HOME/.oh-my-zsh
 export GOPATH=$HOME/.golang
 export PATH=$HOME/bin:/usr/local/bin:$GOPATH/bin:$PATH
-
+[[ $TMUX = "" ]] && export TERM="xterm-256color"
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
@@ -49,7 +49,7 @@ ENABLE_CORRECTION="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions zsh-256color)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -85,3 +85,14 @@ source $ZSH/oh-my-zsh.sh
 export PROMPT='%{$fg[yellow]%}%~%{$fg_bold[blue]%}$(git_prompt_info)%{$reset_color%} $ '
 export ZSH_THEME_GIT_PROMPT_PREFIX=" ("
 
+export PATH="/home/joao/.pyenv/bin:$PATH"
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+source /usr/local/bin/virtualenvwrapper.sh
+setopt nosharehistory
+
+venv() {
+    PROJECT="$(basename $(pwd))"
+    pyenv activate $PROJECT
+    python $PROJECT/manage.py runserver $(cat .env | grep HOST= | grep '[0-9]...' -o)
+}
